@@ -1,0 +1,110 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN для YouTube - Обходите блокировки и смотрите свободно</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">VPN для YouTube</div>
+            <ul>
+                <li><a href="#benefits">Преимущества</a></li>
+                <li><a href="#how-to">Как использовать</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <h1>Смотрите YouTube без ограничений с VPN</h1>
+            <p>Обходите блокировки, наслаждайтесь свободой интернета!</p>
+            <a href="#contact" class="cta-button">Узнать больше</a>
+        </div>
+    </header>
+
+    <section id="benefits">
+        <h2>Почему стоит использовать VPN для YouTube?</h2>
+        <div class="benefits-container">
+            <div class="benefit">
+                <h3>Обход блокировок</h3>
+                <p>Получите доступ к YouTube даже в регионах с ограничениями.</p>
+            </div>
+            <div class="benefit">
+                <h3>Конфиденциальность</h3>
+                <p>Смотрите видео анонимно, защищая свои данные.</p>
+            </div>
+            <div class="benefit">
+                <h3>Высокая скорость</h3>
+                <p>Смотрите видео в HD без буферизации.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to">
+        <h2>Как использовать VPN для YouTube</h2>
+        <ol>
+            <li>Выберите надежный VPN-сервис.</li>
+            <li>Скачайте и установите приложение VPN.</li>
+            <li>Подключитесь к серверу в нужной стране.</li>
+            <li>Откройте YouTube и наслаждайтесь просмотром!</li>
+        </ol>
+    </section>
+
+    <section id="contact">
+        <h2>Свяжитесь с нами</h2>
+        <p>Есть вопросы? Заполните форму ниже, и мы поможем!</p>
+        <div class="contact-form">
+            <input type="text" id="name" placeholder="Ваше имя" required>
+            <input type="email" id="email" placeholder="Ваш email" required>
+            <textarea id="message" placeholder="Ваше сообщение" required></textarea>
+            <button onclick="submitForm()">Отправить</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 VPN для YouTube. Все права защищены.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
